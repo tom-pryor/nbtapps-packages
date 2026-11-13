@@ -1,0 +1,68 @@
+# Contributing
+
+A pull request here adds a package to the NBTApps catalogue, adds a version of one, or changes a listing. Please
+read the agreement below first: opening a pull request means you accept it.
+
+For a security problem, or a package that does something it should not, don't open a pull request or an issue:
+report it privately as [SECURITY.md](https://github.com/tom-pryor/nbtapps/blob/main/SECURITY.md) says.
+
+## Listing agreement (v1.0)
+
+By opening a pull request on this repository you agree to the following for the package it names and everything
+the pull request holds.
+
+1. You give Tom Pryor a perpetual, worldwide, non-exclusive, royalty-free licence to publish what the pull request
+   holds (the listing, its text, the icon and the screenshots) in the NBTApps catalogue, the NBTApps app and
+   anything that shows the catalogue, and to change its form for that, such as to resize an image.
+2. You allow the NBTApps catalogue to give the address of your archive and a signature over its manifest, and the
+   NBTApps app and agent to download it from that address and install it on head units whose owners choose it.
+3. You made the package, or you have the right to publish it and to give the above, including from anyone whose
+   work is in it. Anything in it made by someone else is under a licence that allows this, and is named in your
+   source.
+4. The package does what its listing says and nothing it hides. You give it as is, without any warranty from the
+   NBTApps project, which reviews it but does not make it.
+5. Nothing obliges the project to list your package, or to keep listing it. A version or a package can be taken out
+   of the catalogue at any time, and is when it is found to be unsafe.
+
+You keep the copyright in your package and your listing. If you don't agree, please don't open a pull request.
+
+## A new package
+
+1. Make a key, once, and keep the private half safe and out of every repo:
+
+   ```
+   nbtpkg.py keygen you
+   ```
+
+2. Build and sign the package, and check it:
+
+   ```
+   nbtpkg.py build DIR --key you.key
+   nbtpkg.py verify <id>-<version>.nbtpkg --key you.pub
+   ```
+
+3. Publish the archive at an https address that ends in `<id>-<version>.nbtpkg`, such as a release of the
+   package's own repo, and do not change it afterwards.
+4. Add `packages/<id>/` here:
+   - `author.pub`: your `you.pub`, as it is
+   - `listing.json`
+   - `versions/<version>.json`, with the SHA-256 that `verify` printed
+   - `icon.png` and `screenshots/`, if you have them
+5. Open a pull request, and fill in its template.
+
+[README.md](README.md) has the format of each file, and the rules.
+
+## A new version
+
+Publish the new archive at its own address, signed with the same key, and open a pull request that adds its
+`versions/<version>.json`. A version that is listed is never changed: a fix is a new version.
+
+## Taking a version out
+
+Open a pull request that deletes its record, and say why. Head units that have it keep it until they update.
+
+## Review
+
+A maintainer reviews every pull request. It may take time, and you may be asked questions or for changes. The
+pull request is merged once the package passes and its versions are signed for the catalogue. They are listed
+from the catalogue's next publish.

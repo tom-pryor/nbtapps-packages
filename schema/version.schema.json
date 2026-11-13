@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/tom-pryor/nbtapps-packages/schema/version.schema.json",
+  "title": "packages/<id>/versions/<version>.json",
+  "description": "One version of a package: where its archive is, and the archive's SHA-256. The file's name is the version.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["url", "sha256", "released", "source"],
+  "properties": {
+    "url": {
+      "description": "Where the archive is published. Ends in <id>-<version>.nbtpkg, and serves the archive as it is.",
+      "type": "string", "pattern": "^https://[^\\s\\u0000-\\u001f\\u007f]+\\.nbtpkg$"
+    },
+    "sha256": {
+      "description": "The SHA-256 of the archive, as nbtpkg.py verify prints it.",
+      "type": "string", "pattern": "^[0-9a-f]{64}$"
+    },
+    "released": {
+      "description": "The date of the release.",
+      "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "notes": {
+      "description": "What is new, a line each.",
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "^[^\\u0000-\\u001f\\u007f]*\\S[^\\u0000-\\u001f\\u007f]*$" }
+    },
+    "source": {
+      "description": "The public repo and the commit the archive was built from.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repo", "commit"],
+      "properties": {
+        "repo": { "type": "string", "pattern": "^https://[^\\s\\u0000-\\u001f\\u007f]+$" },
+        "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
+      }
+    }
+  }
+}

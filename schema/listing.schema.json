@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/tom-pryor/nbtapps-packages/schema/listing.schema.json",
+  "title": "packages/<id>/listing.json",
+  "description": "How a package is listed in the catalogue. Text has no control character but a new line in description, and is not blank.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["summary", "author", "category", "description"],
+  "properties": {
+    "summary": {
+      "description": "One line under the package's name.",
+      "type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[^\\u0000-\\u001f\\u007f]*\\S[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "author": {
+      "description": "Who made the package.",
+      "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[^\\u0000-\\u001f\\u007f]*\\S[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "category": {
+      "description": "A short lower-case word, such as connectivity, media, navigation, system or utilities.",
+      "type": "string", "pattern": "^[a-z][a-z0-9-]{0,31}$"
+    },
+    "description": {
+      "description": "What the package does and needs. New lines are kept.",
+      "type": "string", "minLength": 1, "maxLength": 4000, "pattern": "^[^\\u0000-\\u0009\\u000b-\\u001f\\u007f]*\\S[^\\u0000-\\u0009\\u000b-\\u001f\\u007f]*$"
+    },
+    "homepage": {
+      "description": "The package's page.",
+      "type": "string", "pattern": "^https://[^\\s\\u0000-\\u001f\\u007f]+$"
+    }
+  }
+}
