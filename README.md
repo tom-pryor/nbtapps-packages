@@ -94,6 +94,13 @@ The file's name is the version, which is the manifest's `version`. The `url` end
   that are taken are listed at `https://catalogue.nbtapps.com/v1/hmi-ids.json`: choose others, and name the ids
   your plugin uses in the pull request.
 - **Dependencies** are on packages the catalogue lists.
+- **Logs.** A package that keeps logs names them in its manifest's `logs`, so the NBTApps app can fetch them from
+  the head unit when a user asks, zip them and let the user send them on. Name your own files only: under
+  `${app}`, `${data}`, or `${tmp}`, your package's own folder on the head unit's RAM disk, which a power down
+  empties and which spares its flash; or a fixed path under `/tmp` or `/var` that a ported program writes to. A
+  user shares these files with whoever asked for them, so a log does not record where the car has been or anything
+  personal, such as phone numbers, contacts or names. Keep each log short: rotate it, and keep two or three files
+  of at most a few hundred KB. The head unit's `/tmp` holds 14 MB for everything on it.
 - **`author.pub`** stays the same from version to version. A pull request that changes it is treated as a change
   of owner: say why in it, and expect to be asked to show that you hold the old key.
 
@@ -111,7 +118,7 @@ python3 tools/check.py --nbtapps ../nbtapps/headunit
 
 Passing the check is not being accepted. At review, the archive is fetched from your `url` and must be the file the record pins, signed by `author.pub`,
 and must pass every check the catalogue's own packages pass. The source is read at `source.commit`, and the
-package's install scripts and what it places on the head unit are looked at in particular. A package runs with
+package's install scripts, what it places on the head unit and the logs it names are looked at in particular. A package runs with
 full access to a car's head unit. One that is not clear about what it does, or that a maintainer cannot follow,
 is not accepted.
 

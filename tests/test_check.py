@@ -56,10 +56,12 @@ class CheckTest(unittest.TestCase):
             f.write(value if isinstance(value, bytes) else
                     value.encode() if isinstance(value, str) else (json.dumps(value, indent=2) + "\n").encode())
 
-    def archive(self, pkg_id, version, seed=AUTHOR, text="hello"):
+    def archive(self, pkg_id, version, seed=AUTHOR, text="hello", logs=None):
         manifest = {"manifestVersion": 1, "id": pkg_id, "name": "Demo", "version": version,
                     "requires": {"agent": ">=1.2.0"},
                     "install": {"files": [{"src": "payload/", "dest": "${app}/", "mode": "0644"}]}}
+        if logs is not None:
+            manifest["logs"] = [{"path": path} for path in logs]
         with tempfile.TemporaryDirectory() as src:
             os.makedirs(os.path.join(src, "payload"))
             with open(os.path.join(src, "payload", "hello.txt"), "w") as f:
@@ -121,6 +123,22 @@ class CheckTest(unittest.TestCase):
 
         self.add("com.example.app", "1.0.0", data=self.archive("com.example.other", "1.0.0"))
         self.assertIn("the archive is com.example.other 1.0.0", self.errors()[0])
+
+    def test_the_logs_a_package_names_are_checked_with_its_manifest(self):
+        logs = ["${data}/log/*.log", "${tmp}/crash.txt", "/tmp/demo.log"]
+        self.add("com.example.app", "1.0.0", data=self.archive("com.example.app", "1.0.0", logs=logs))
+        self.assertEqual([], self.errors())
+        # The agent's own folder holds the pairing keys: no package names a log there. nbtpkg.py builds no such
+        # package, so its manifest is put into the archive here, signed by its author.
+        entries = nbtpkg.read_zip(self.archive("com.example.app", "1.0.0"))
+        manifest = json.loads(entries[0]["data"])
+        manifest["logs"] = [{"path": "/var/opt/nbtapp/phones.json"}]
+        text = json.dumps(manifest).encode()
+        data = nbtpkg.write_zip([nbtpkg.make_member(nbtpkg.MANIFEST, text),
+                                 nbtpkg.make_member(nbtpkg.SIGNATURE, nbtpkg.sign(AUTHOR, text), store=True)]
+                                + [nbtpkg.make_member(e["name"], e["data"]) for e in entries[2:] if not e["dir"]])
+        self.add("com.example.app", "1.0.0", data=data)
+        self.assertIn("nbtpkg.py verify --key author.pub refuses the archive (bad-manifest)", self.errors()[0])
 
     def test_the_source_commit_must_be_there(self):
         self.add("com.example.app", "1.0.0", source={"repo": "https://example.invalid/src", "commit": "1" * 40})

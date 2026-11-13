@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           repository: tom-pryor/nbtapps
-          ref: 8ec6cdf10a68d1f81f2f1abc6bac485fd3d0a114
+          ref: 099bcc78c8faf8014b76997233338064ccec41d2
           path: .nbtapps
           sparse-checkout: |
             headunit/tools
