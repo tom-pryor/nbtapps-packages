@@ -1,0 +1,53 @@
+# Checks a pull request's packages with tools/check.py. It runs on pull_request, never pull_request_target: a
+# pull request from a fork gets a read-only token and no secrets, and the repo holds no secrets to give. What it
+# checks is data, which is never run: an archive is fetched and read, not unpacked or installed.
+#
+# tools/nbtpkg.py and spec/ come from the NBTApps repo at the commit below, the one the catalogue's copy of
+# nbtpkg.py is taken from. The catalogue repo has a test that the two agree: move them together.
+name: check
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out this repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check out nbtpkg.py and spec/ of the NBTApps repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          repository: tom-pryor/nbtapps
+          ref: 8ec6cdf10a68d1f81f2f1abc6bac485fd3d0a114
+          path: .nbtapps
+          sparse-checkout: |
+            headunit/tools
+            headunit/spec
+          persist-credentials: false
+
+      - name: Install cryptography
+        run: |
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install --quiet --disable-pip-version-check cryptography==50.0.2
+
+      - name: Test the check
+        env:
+          NBTAPPS_HEADUNIT: .nbtapps/headunit
+        run: |
+          "$RUNNER_TEMP/venv/bin/python" -m unittest discover -s tests
+
+      - name: Check
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          "$RUNNER_TEMP/venv/bin/python" tools/check.py --nbtapps .nbtapps/headunit ${BASE:+--base "$BASE"}

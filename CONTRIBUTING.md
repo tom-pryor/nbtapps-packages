@@ -48,7 +48,8 @@ You keep the copyright in your package and your listing. If you don't agree, ple
    - `listing.json`
    - `versions/<version>.json`, with the SHA-256 that `verify` printed
    - `icon.png` and `screenshots/`, if you have them
-5. Open a pull request, and fill in its template.
+5. Run `python3 tools/check.py --nbtapps ../nbtapps/headunit` (see [What is checked](README.md#what-is-checked)),
+   then open a pull request, and fill in its template. The same check runs on it.
 
 [README.md](README.md) has the format of each file, and the rules.
 

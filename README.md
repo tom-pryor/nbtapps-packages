@@ -37,6 +37,7 @@ packages/<id>/icon.png                   optional, at most 256 KiB
 packages/<id>/screenshots/*.png          optional, at most 2 MiB each
 packages/<id>/versions/<version>.json    url, sha256, released, notes (optional), source
 schema/                                  JSON Schemas for listing.json and a version's record
+tools/check.py                           the check a pull request gets, which can be run before opening one
 ```
 
 A package's name, size, `requires`, `depends`, risk flags and everything else about what it installs are not
@@ -89,7 +90,8 @@ The file's name is the version, which is the manifest's `version`. The `url` end
 - **The source** is a public repo, and `source.commit` is the commit the archive was built from.
 - **Stock files.** A package does not replace a file of the head unit's own software.
 - **iDrive plugins.** A package that installs into `${plugins}` asks for an HMI restart or a reboot, and its
-  connector and focus ids are given to it by the catalogue, so that no two packages use the same one. Name the ids
+  connector and focus ids are given to it by the catalogue, so that no two packages use the same one. The ids
+  that are taken are listed at `https://catalogue.nbtapps.com/v1/hmi-ids.json`: choose others, and name the ids
   your plugin uses in the pull request.
 - **Dependencies** are on packages the catalogue lists.
 - **`author.pub`** stays the same from version to version. A pull request that changes it is treated as a change
@@ -97,7 +99,17 @@ The file's name is the version, which is the manifest's `version`. The `url` end
 
 ## What is checked
 
-At review, the archive is fetched from your `url` and must be the file the record pins, signed by `author.pub`,
+Every pull request gets an automatic check, [`tools/check.py`](tools/check.py). It checks every package's files
+against the schemas and the rules above, and for a version that the pull request adds, it fetches the archive
+from `url`, wants the file `sha256` pins, runs `nbtpkg.py verify --key author.pub` on it, and looks for
+`source.commit` in `source.repo`. A version that was already here and is changed fails. To run it first, with a
+checkout of [NBTApps](https://github.com/tom-pryor/nbtapps) beside this repo:
+
+```
+python3 tools/check.py --nbtapps ../nbtapps/headunit
+```
+
+Passing the check is not being accepted. At review, the archive is fetched from your `url` and must be the file the record pins, signed by `author.pub`,
 and must pass every check the catalogue's own packages pass. The source is read at `source.commit`, and the
 package's install scripts and what it places on the head unit are looked at in particular. A package runs with
 full access to a car's head unit. One that is not clear about what it does, or that a maintainer cannot follow,
