@@ -135,3 +135,9 @@ A package that does something it should not, or a security problem in this repo,
 [SECURITY.md](https://github.com/tom-pryor/nbtapps/blob/main/SECURITY.md) says, not in an issue.
 
 [CONTRIBUTING.md](CONTRIBUTING.md) has the agreement a pull request comes under and the steps, one by one.
+
+## Licence
+
+This repo's own files (the documents, the schemas, `tools/` and its tests) are under the MIT licence in
+[LICENSE](LICENSE). What a pull request adds under `packages/` comes under the listing agreement in
+[CONTRIBUTING.md](CONTRIBUTING.md), and each package stays its author's.
