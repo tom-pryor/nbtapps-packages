@@ -16,9 +16,14 @@ A version's record that is new since REF (with no --base, every record) is then 
   - `nbtpkg.py verify --key author.pub` takes it, and its manifest has the folder's id and the record's version
   - `source.commit` is a commit of `source.repo`, fetched over https
 
-With --base, a record that was there at REF and is changed fails: a published version never changes. A record
-that is taken out, an author.pub that changes and a change outside packages/ are named for the reviewer, and do
-not fail.
+With --base, a record that was there at REF and is changed fails: a published version never changes. The one
+change that does not fail is a promotion, which takes "channel": "prerelease" out of a record and changes
+nothing else: the same archive is then a stable version. A record that was stable never gets a "channel". A
+record that is taken out, a promotion, an author.pub that changes and a change outside packages/ are named for
+the reviewer, and do not fail.
+
+A version whose name has a pre-release part, such as 1.4.0-beta.1, is a pre-release: its record has
+"channel": "prerelease", and it is never promoted.
 
 --offline fetches nothing: no archive, no commit, and not the catalogue's ids.
 
@@ -46,6 +51,7 @@ MAX_ICON_BYTES = 256 << 10
 MAX_SCREENSHOT_BYTES = 2 << 20
 PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
 PACKAGE_FILES = ("listing.json", "author.pub", "icon.png", "screenshots", "versions")
+PRERELEASE = "prerelease"   # the channel of a version that is not finished; a record with no "channel" is stable
 
 _PACKAGE_ID = re.compile(r"[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*)+")
 _VERSION = re.compile(
@@ -99,8 +105,9 @@ def load_nbtpkg(folder):
     nbtpkg = module
 
 
-def read_json(path):
-    """(object, None) or (None, why not). A key twice is refused, as the catalogue refuses it."""
+def read_json(path, data=None):
+    """(object, None) or (None, why not), of the file at `path` or of `data`, its bytes. A key twice is refused,
+    as the catalogue refuses it."""
     def pairs(items):
         obj = {}
         for key, value in items:
@@ -110,8 +117,10 @@ def read_json(path):
         return obj
 
     try:
-        with open(path, "rb") as f:
-            value = json.loads(f.read().decode("utf-8"), object_pairs_hook=pairs)
+        if data is None:
+            with open(path, "rb") as f:
+                data = f.read()
+        value = json.loads(data.decode("utf-8"), object_pairs_hook=pairs)
     except OSError as e:
         return None, "cannot be read: %s" % e.strerror
     except ValueError as e:
@@ -231,6 +240,10 @@ def check_package(root, pkg_id, official, schemas, report):
         if not is_date(record["released"]):
             report.error(at, "\"released\" is not a date")
             continue
+        if _VERSION.fullmatch(version).group(4) is not None and record.get("channel") != PRERELEASE:
+            report.error(at, "%s has a pre-release part, so it is a pre-release, and its record has \"channel\": "
+                             "\"%s\"" % (version, PRERELEASE))
+            continue
         records[version] = record
     return records, author
 
@@ -308,6 +321,23 @@ def changes(root, base):
     return [(parts[i][:1], parts[i + 1]) for i in range(0, len(parts) - 1, 2)]
 
 
+def changed_record(root, base, path):
+    """What a change to a version's record that was there at `base` does: "promotes" when it takes
+    "channel": "prerelease" out and changes nothing else, "demotes" when it gives a stable version a channel, and
+    otherwise "changes"."""
+    shown = subprocess.run(["git", "-C", root, "show", "%s:%s" % (base, path)], capture_output=True)
+    before = read_json(path, shown.stdout)[0] if shown.returncode == 0 else None
+    now = read_json(os.path.join(root, *path.split("/")))[0]
+    if before is None or now is None:
+        return "changes"
+    if "channel" not in before and "channel" in now:
+        return "demotes"
+    if before.get("channel") == PRERELEASE and "channel" not in now \
+            and {k: v for k, v in before.items() if k != "channel"} == now:
+        return "promotes"
+    return "changes"
+
+
 def check(root, base=None, offline=False, report=None):
     report = report or Report()
     schemas = {name: load_schema("%s.schema.json" % name) for name in ("listing", "version")}
@@ -332,8 +362,15 @@ def check(root, base=None, offline=False, report=None):
             if record and status == "A":
                 new.add(record.groups())
             elif record and status == "M":
-                report.error(path, "is a version that was already here, and a published version never changes: "
-                                   "a changed archive is a new version")
+                change = changed_record(root, base, path)
+                if change == "promotes":
+                    report.notice(path, "promotes this pre-release to stable, with the archive that is here already")
+                elif change == "demotes":
+                    report.error(path, "is a stable version that was already here, and a stable version is never "
+                                       "made a pre-release: take it out instead")
+                else:
+                    report.error(path, "is a version that was already here, and a published version never changes: "
+                                       "a changed archive is a new version")
             elif record and status == "D":
                 report.notice(path, "takes this version out")
             elif re.fullmatch(r"packages/[^/]+/author\.pub", path) and status == "M":

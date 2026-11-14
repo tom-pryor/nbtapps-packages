@@ -203,6 +203,53 @@ class CheckTest(unittest.TestCase):
                           "a published version never changes: a changed archive is a new version"],
                          self.errors(base=base))
 
+    def test_a_pre_release_has_its_channel_and_a_version_with_a_pre_release_part_is_one(self):
+        self.add("com.example.app", "1.0.0", channel="prerelease")
+        self.add("com.example.app", "1.1.0-beta.1", channel="prerelease")
+        self.assertEqual([], self.errors())
+
+        self.add("com.example.app", "1.1.0-beta.2")
+        self.add("com.example.app", "1.2.0", channel="beta")
+        errors = self.errors(offline=True)
+        self.assertIn("packages/com.example.app/versions/1.1.0-beta.2.json: 1.1.0-beta.2 has a pre-release part, so "
+                      "it is a pre-release, and its record has \"channel\": \"prerelease\"", errors)
+        self.assertIn("packages/com.example.app/versions/1.2.0.json: .channel must be one of: prerelease", errors)
+
+    def test_a_pre_release_is_promoted_by_taking_its_channel_out_and_nothing_else(self):
+        self.git("init", "-q", "-b", "main")
+        self.add("com.example.app", "1.0.0")
+        self.add("com.example.app", "1.1.0", channel="prerelease", notes=["Trying"])
+        self.add("com.example.app", "1.2.0-rc.1", channel="prerelease")
+        base = self.commit()
+        self.served.clear()                                         # nothing is fetched again
+
+        self.add("com.example.app", "1.1.0", notes=["Trying"])
+        self.commit()
+        report = self.check(base=base)
+        self.assertEqual([], report.errors)
+        self.assertEqual([("packages/com.example.app/versions/1.1.0.json",
+                           "promotes this pre-release to stable, with the archive that is here already")], report.notices)
+
+        # Anything else changed with it is a change, and so is a version with a pre-release part made stable.
+        self.add("com.example.app", "1.1.0", notes=["Done"])
+        self.add("com.example.app", "1.2.0-rc.1")
+        self.commit()
+        self.assertEqual(["packages/com.example.app/versions/1.1.0.json: is a version that was already here, and a "
+                          "published version never changes: a changed archive is a new version",
+                          "packages/com.example.app/versions/1.2.0-rc.1.json: 1.2.0-rc.1 has a pre-release part, so it "
+                          "is a pre-release, and its record has \"channel\": \"prerelease\""],
+                         sorted(self.errors(base=base)))
+
+    def test_a_stable_version_is_never_made_a_pre_release(self):
+        self.git("init", "-q", "-b", "main")
+        self.add("com.example.app", "1.0.0")
+        base = self.commit()
+        self.add("com.example.app", "1.0.0", channel="prerelease")
+        self.commit()
+        self.assertEqual(["packages/com.example.app/versions/1.0.0.json: is a stable version that was already here, "
+                          "and a stable version is never made a pre-release: take it out instead"],
+                         self.errors(base=base))
+
     def test_what_the_reviewer_should_see_is_named_and_does_not_fail(self):
         self.git("init", "-q", "-b", "main")
         self.add("com.example.app", "1.0.0")
