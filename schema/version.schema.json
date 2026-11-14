@@ -19,6 +19,10 @@
       "description": "The date of the release.",
       "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
     },
+    "channel": {
+      "description": "\"prerelease\" for a version that is not finished, which the app offers only to those who ask for pre-releases. With no channel the version is stable. A version whose name has a pre-release part, such as 1.4.0-beta.1, is always a pre-release.",
+      "type": "string", "enum": ["prerelease"]
+    },
     "notes": {
       "description": "What is new, a line each.",
       "type": "array",

@@ -1,7 +1,7 @@
 # Contributing
 
-A pull request here adds a package to the NBTApps catalogue, adds a version of one, or changes a listing. Please
-read the agreement below first: opening a pull request means you accept it.
+A pull request here adds a package to the NBTApps catalogue, adds a version of one, promotes a pre-release, or
+changes a listing. Please read the agreement below first: opening a pull request means you accept it.
 
 For a security problem, or a package that does something it should not, don't open a pull request or an issue:
 report it privately as [SECURITY.md](https://github.com/tom-pryor/nbtapps/blob/main/SECURITY.md) says.
@@ -60,6 +60,30 @@ Publish the new archive at its own address, signed with the same key, and open a
 `versions/<version>.json`. Or let a bot open it from a release of the package's repo on GitHub, as
 [A new version from your release](README.md#a-new-version-from-your-release) describes. A version that is listed
 is never changed: a fix is a new version.
+
+## A pre-release
+
+A version for those who want to try what is not finished is published as any new version is, with one key more
+in its record: `"channel": "prerelease"`. The app offers it only to those who ask for pre-releases. It is
+reviewed and accepted as any version is, and a package may start with pre-releases alone.
+
+Choose its version for what comes next:
+
+- a version with a pre-release part, such as `1.4.0-beta.1`, is always a pre-release. When it is done, the stable
+  version is a new build with a new record, `1.4.0`;
+- a plain version, such as `1.4.0`, can be promoted once it has been tried: the same archive becomes the stable
+  version, and nothing is built again.
+
+A pre-release that is not above the package's newest stable version is no longer listed, and its record may be
+taken out.
+
+## Promoting a pre-release
+
+Open a pull request that takes the line `"channel": "prerelease",` out of the version's record and changes
+nothing else, not even the notes. The check names it as a promotion and fetches nothing: the archive is the one
+that was accepted, and it needs no second review. A stable version's dependencies are met by stable versions,
+so promote what it depends on first. A stable version is never made a pre-release again; one that turns out bad
+is taken out.
 
 ## Taking a version out
 

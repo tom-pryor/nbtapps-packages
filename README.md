@@ -76,7 +76,8 @@ packages/<id>/listing.json               summary, author, category, description,
 packages/<id>/author.pub                 your Ed25519 public key, as `nbtpkg.py keygen` writes it
 packages/<id>/icon.png                   optional, at most 256 KiB
 packages/<id>/screenshots/*.png          optional, at most 2 MiB each
-packages/<id>/versions/<version>.json    url, sha256, released, notes (optional), source
+packages/<id>/versions/<version>.json    url, sha256, released, channel (for a pre-release), notes (optional),
+                                         source
 schema/                                  JSON Schemas for listing.json and a version's record
 tools/check.py                           the check a pull request gets, which can be run before opening one
 tools/propose.py                         the bot that proposes a new version from a release of its repo
@@ -118,6 +119,17 @@ written here. The catalogue reads them out of the archive, so they cannot differ
 The file's name is the version, which is the manifest's `version`. The `url` ends in `<id>-<version>.nbtpkg`.
 [`schema/version.schema.json`](schema/version.schema.json) has every rule.
 
+A version that is not finished is a **pre-release**, and its record has one key more:
+
+```json
+  "channel": "prerelease",
+```
+
+The app offers a pre-release only to those who ask for pre-releases; everyone else gets the newest stable
+version, which is one whose record has no `channel`. A package may have pre-releases alone, and it is listed with
+them. A version whose name has a pre-release part, such as `1.4.0-beta.1`, is always a pre-release. A pre-release
+that is not above the package's newest stable version is not listed.
+
 ## Rules
 
 - **The id** is the folder's name and the manifest's `id`: two or more labels of `a-z` and `0-9` joined by dots,
@@ -129,6 +141,11 @@ The file's name is the version, which is the manifest's `version`. The `url` end
   [`manifest.schema.json`](https://github.com/tom-pryor/nbtapps/blob/main/headunit/spec/manifest.schema.json).
 - **A published version never changes.** A new archive needs a new version number and a new record. Deleting a
   record takes that version out of the catalogue.
+- **Channels.** The one change to a record that is allowed is a promotion: taking `"channel": "prerelease"` out
+  of it, and changing nothing else, which makes the same archive a stable version. A version whose name has a
+  pre-release part (`1.4.0-beta.1`) is never promoted: the stable version after it is a new one, `1.4.0`. A
+  stable version is never made a pre-release; a bad one is taken out. A stable version's dependencies are met by
+  stable versions in the catalogue, and a pre-release's by any version it lists.
 - **The source** is a public repo, and `source.commit` is the commit the archive was built from.
 - **Stock files.** A package does not replace a file of the head unit's own software.
 - **iDrive plugins.** A package that installs into `${plugins}` asks for an HMI restart or a reboot, and its
@@ -151,7 +168,8 @@ The file's name is the version, which is the manifest's `version`. The `url` end
 Every pull request gets an automatic check, [`tools/check.py`](tools/check.py). It checks every package's files
 against the schemas and the rules above, and for a version that the pull request adds, it fetches the archive
 from `url`, wants the file `sha256` pins, runs `nbtpkg.py verify --key author.pub` on it, and looks for
-`source.commit` in `source.repo`. A version that was already here and is changed fails. To run it first, with a
+`source.commit` in `source.repo`. A version that was already here and is changed fails, unless the change is a
+promotion and nothing more. To run it first, with a
 checkout of [NBTApps](https://github.com/tom-pryor/nbtapps) beside this repo:
 
 ```
