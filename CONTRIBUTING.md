@@ -9,7 +9,8 @@ report it privately as [SECURITY.md](https://github.com/tom-pryor/nbtapps/blob/m
 ## Listing agreement (v1.0)
 
 By opening a pull request on this repository you agree to the following for the package it names and everything
-the pull request holds.
+the pull request holds. By opening a package's first pull request you also agree to it for each later version of
+that package that this repository's bot proposes from a release of the package's own repo, as README.md describes.
 
 1. You give Tom Pryor a perpetual, worldwide, non-exclusive, royalty-free licence to publish what the pull request
    holds (the listing, its text, the icon and the screenshots) in the NBTApps catalogue, the NBTApps app and
@@ -56,7 +57,9 @@ You keep the copyright in your package and your listing. If you don't agree, ple
 ## A new version
 
 Publish the new archive at its own address, signed with the same key, and open a pull request that adds its
-`versions/<version>.json`. A version that is listed is never changed: a fix is a new version.
+`versions/<version>.json`. Or let a bot open it from a release of the package's repo on GitHub, as
+[A new version from your release](README.md#a-new-version-from-your-release) describes. A version that is listed
+is never changed: a fix is a new version.
 
 ## Taking a version out
 

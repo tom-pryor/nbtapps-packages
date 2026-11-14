@@ -1,0 +1,74 @@
+# Proposes a new version of a package that is already here, from a release of the package's own repo, so that its
+# author does not have to open the pull request. Once an hour, tools/propose.py reads the newest record of each
+# package, looks at the releases of its source.repo on GitHub, and for a release that holds nbtpkg-record.json and
+# a newer version, writes that record, checks it with tools/check.py as a pull request's check does (archive fetched
+# and verified, commit looked for), and opens a pull request on the branch auto/<id>-<version> if it passes. A
+# maintainer reviews, signs and merges it by hand, as any other. The top of tools/propose.py has every rule.
+#
+# Why it is safe: it only proposes, and it never adds a package, so a repo is only watched once a maintainer has
+# merged a package's first pull request by hand. What it fetches is data, which is read and never run: no archive
+# is unpacked or installed, and nothing fetched goes into a command, a file's name, a branch or a title. It
+# pushes only a new auto/ branch holding one new record, and main is protected so that its token cannot change
+# main itself. The token is given to git only for the push, in its environment, and this checkout keeps none.
+#
+# The GITHUB_TOKEN may make 1,000 API requests an hour in a repository; the bot makes at most two for each
+# package and one more for each pull request. GitHub can start a scheduled run late, or drop it, when it is busy, so this
+# runs at an odd minute, and it turns the schedule off in a public repo after 60 days without activity in it: run
+# it by hand to turn it on again. A pull request opened with the GITHUB_TOKEN gets its pull_request runs only once
+# a maintainer approves them, so the bot runs the check itself and puts its output in the pull request.
+#
+# tools/nbtpkg.py and spec/ come from the NBTApps repo at the same commit as in check.yml: move them together.
+name: propose
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: propose
+  cancel-in-progress: false
+
+jobs:
+  propose:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out this repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check out nbtpkg.py and spec/ of the NBTApps repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          repository: tom-pryor/nbtapps
+          ref: 099bcc78c8faf8014b76997233338064ccec41d2
+          path: .nbtapps
+          sparse-checkout: |
+            headunit/tools
+            headunit/spec
+          persist-credentials: false
+
+      - name: Install cryptography
+        run: |
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install --quiet --disable-pip-version-check cryptography==50.0.2
+
+      - name: Test the check and the bot
+        env:
+          NBTAPPS_HEADUNIT: .nbtapps/headunit
+        run: |
+          "$RUNNER_TEMP/venv/bin/python" -m unittest discover -s tests
+
+      - name: Propose
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          "$RUNNER_TEMP/venv/bin/python" tools/propose.py --nbtapps .nbtapps/headunit

@@ -28,6 +28,47 @@ address is refused. Your own signature shows the review that the archive came fr
 A community package installs on a head unit whose NBTApps agent is version 1.2.0 or later. The app says when a
 car's agent is too old, and offers the update.
 
+## A new version from your release
+
+Once a package is here, a bot can open the pull request for each new version of it. Every hour it looks at the
+releases of the GitHub repo that the package's newest record names in `source.repo`, when that is written as
+`https://github.com/<owner>/<repo>`, and proposes a newer version from a release that holds two assets:
+
+- the archive, `<id>-<version>.nbtpkg`, signed with the key in `author.pub`
+- `nbtpkg-record.json`: the package's id, the version, and the record to add here, whose `url` is that archive in
+  the same release and whose `source.repo` is the same repo:
+
+  ```json
+  {
+    "id": "com.github.you.thing",
+    "version": "1.1.0",
+    "record": {
+      "url": "https://github.com/you/your-package/releases/download/v1.1.0/com.github.you.thing-1.1.0.nbtpkg",
+      "sha256": "...",
+      "released": "2026-12-01",
+      "notes": ["What is new, one line each"],
+      "source": { "repo": "https://github.com/you/your-package", "commit": "..." }
+    }
+  }
+  ```
+
+Drafts and pre-releases are left alone, as are all but the 30 newest releases, and of the versions above the
+newest one here only the newest is proposed. The bot runs
+[`tools/check.py`](tools/check.py) on the record first, and opens the pull request, on a branch
+`auto/<id>-<version>`, only if it passes; if it does not, nothing is opened. A version is proposed once: while its
+branch is here, it is not proposed again, even if its pull request is closed, and deleting the branch lets it be
+proposed again. The pull request is reviewed and merged as one you open yourself, and a version from a pull request
+of your own is as welcome.
+
+A package's first pull request, with its listing, `author.pub` and first version, is always opened by hand: the
+bot never adds a package, and only watches the repo of one that is here. [`tools/propose.py`](tools/propose.py)
+has every rule, and `python3 tools/propose.py --nbtapps ../nbtapps/headunit --dry-run` shows what it would
+propose.
+
+GitHub may start the hourly run late, or skip it when it is busy, and turns it off in a public repo after 60 days
+without activity in it, so a version can take longer to be proposed. A pull request the bot opens gets its own
+check only once a maintainer approves the run; the bot puts the output of the check it ran in the pull request.
+
 ## Layout
 
 ```
@@ -38,6 +79,7 @@ packages/<id>/screenshots/*.png          optional, at most 2 MiB each
 packages/<id>/versions/<version>.json    url, sha256, released, notes (optional), source
 schema/                                  JSON Schemas for listing.json and a version's record
 tools/check.py                           the check a pull request gets, which can be run before opening one
+tools/propose.py                         the bot that proposes a new version from a release of its repo
 ```
 
 A package's name, size, `requires`, `depends`, risk flags and everything else about what it installs are not
@@ -94,6 +136,13 @@ The file's name is the version, which is the manifest's `version`. The `url` end
   that are taken are listed at `https://catalogue.nbtapps.com/v1/hmi-ids.json`: choose others, and name the ids
   your plugin uses in the pull request.
 - **Dependencies** are on packages the catalogue lists.
+- **Logs.** A package that keeps logs names them in its manifest's `logs`, so the NBTApps app can fetch them from
+  the head unit when a user asks, zip them and let the user send them on. Name your own files only: under
+  `${app}`, `${data}`, or `${tmp}`, your package's own folder on the head unit's RAM disk, which a power down
+  empties and which spares its flash; or a fixed path under `/tmp` or `/var` that a ported program writes to. A
+  user shares these files with whoever asked for them, so a log does not record where the car has been or anything
+  personal, such as phone numbers, contacts or names. Keep each log short: rotate it, and keep two or three files
+  of at most a few hundred KB. The head unit's `/tmp` holds 14 MB for everything on it.
 - **`author.pub`** stays the same from version to version. A pull request that changes it is treated as a change
   of owner: say why in it, and expect to be asked to show that you hold the old key.
 
@@ -111,7 +160,7 @@ python3 tools/check.py --nbtapps ../nbtapps/headunit
 
 Passing the check is not being accepted. At review, the archive is fetched from your `url` and must be the file the record pins, signed by `author.pub`,
 and must pass every check the catalogue's own packages pass. The source is read at `source.commit`, and the
-package's install scripts and what it places on the head unit are looked at in particular. A package runs with
+package's install scripts, what it places on the head unit and the logs it names are looked at in particular. A package runs with
 full access to a car's head unit. One that is not clear about what it does, or that a maintainer cannot follow,
 is not accepted.
 
