@@ -132,9 +132,15 @@ class ProposeTest(unittest.TestCase):
         self.write(folder + "/listing.json", {"summary": "A demo", "author": "Someone", "category": "utilities",
                                               "description": "Does nothing."})
         self.write(folder + "/author.pub", "# someone\n%s\n" % nbtpkg.public_key(AUTHOR).hex())
-        self.write("%s/versions/%s.json" % (folder, version), {
-            "url": "%s/releases/download/v%s/%s-%s.nbtpkg" % (repo, version, pkg_id, version),
-            "sha256": "ab" * 32, "released": "2026-11-01", "source": {"repo": repo, "commit": COMMIT}})
+        self.add_record(version, pkg_id, repo)
+
+    def add_record(self, version, pkg_id=APP, repo=WATCHED, prerelease=False):
+        """A version's record that is here already."""
+        record = {"url": "%s/releases/download/v%s/%s-%s.nbtpkg" % (repo, version, pkg_id, version),
+                  "sha256": "ab" * 32, "released": "2026-11-01", "source": {"repo": repo, "commit": COMMIT}}
+        if prerelease:
+            record["channel"] = "prerelease"
+        self.write("packages/%s/versions/%s.json" % (pkg_id, version), record)
 
     def release(self, version, pkg_id=APP, repo=WATCHED, tag=None, draft=False, prerelease=False, data=None,
                 change=None, raw=None, record_asset=True, archive_asset=True):
@@ -226,10 +232,96 @@ class ProposeTest(unittest.TestCase):
         self.assertIn("--- would push auto/com.example.app-1.1.0 and open the pull request \"com.example.app "
                       "1.1.0\" against main", self.out)
 
-    def test_drafts_and_pre_releases_are_skipped(self):
+    def test_drafts_are_skipped(self):
         self.release("1.1.0", draft=True)
-        self.release("1.2.0", prerelease=True)
+        self.release("1.2.0", draft=True, prerelease=True)
         self.assertEqual("none", self.run_bot()[0][0][1])
+        self.release("1.0.1")
+        self.assertEqual([(APP, "proposed", "1.0.1: https://github.com/%s/pull/1" % THIS)], self.run_bot()[0])
+
+    def test_a_pre_release_on_github_is_proposed_as_a_pre_release(self):
+        self.release("1.2.0", prerelease=True)
+        self.assertEqual([(APP, "proposed", "1.2.0: https://github.com/%s/pull/1" % THIS)], self.run_bot()[0])
+        record = self.github.pushed["auto/com.example.app-1.2.0"]["packages/com.example.app/versions/1.2.0.json"]
+        served = json.loads(self.served["%s/releases/download/v1.2.0/nbtpkg-record.json" % WATCHED])["record"]
+        self.assertNotIn("channel", served)
+        self.assertEqual(dict(served, channel="prerelease"), json.loads(record))
+        self.assertIn('\n  "released": "2026-11-13",\n  "channel": "prerelease",\n  "notes": ', record)
+        pull = self.github.pulls[0]
+        self.assertEqual("com.example.app 1.2.0 (pre-release)", pull["title"])
+        for piece in ("**This adds:** version 1.2.0, a pre-release", "so the record has `\"channel\": \"prerelease\"`",
+                      "1 package(s): 0 error(s), 0 notice(s)"):
+            self.assertIn(piece, pull["body"])
+
+    def test_a_version_with_a_pre_release_part_is_a_pre_release_whatever_github_says(self):
+        self.release("1.1.0-beta.1")
+        self.assertEqual("proposed", self.run_bot()[0][0][1])
+        record = self.github.pushed["auto/com.example.app-1.1.0-beta.1"][
+            "packages/com.example.app/versions/1.1.0-beta.1.json"]
+        self.assertEqual("prerelease", json.loads(record)["channel"])
+        self.assertEqual("com.example.app 1.1.0-beta.1 (pre-release)", self.github.pulls[0]["title"])
+
+    def test_the_file_may_say_it_is_a_pre_release_only_where_the_release_is_one(self):
+        self.release("1.1.0", prerelease=True, change=lambda v: v["record"].update(channel="prerelease"))
+        self.assertEqual("proposed", self.run_bot()[0][0][1])
+        record = self.github.pushed["auto/com.example.app-1.1.0"]["packages/com.example.app/versions/1.1.0.json"]
+        self.assertEqual(1, record.count('"channel"'))
+
+        self.github.releases.clear()
+        self.release("1.2.0", change=lambda v: v["record"].update(channel="prerelease"))
+        outcomes = self.run_bot()[0]
+        self.assertEqual((APP, "declined"), outcomes[0][:2])
+        self.assertIn("\"record\" has \"channel\": \"prerelease\", and the release is not marked as a pre-release",
+                      outcomes[0][2])
+        self.assertEqual(1, len(self.github.pulls))
+
+    def test_a_stable_version_and_a_pre_release_above_it_are_proposed_one_after_the_other(self):
+        self.release("1.0.1")
+        self.release("1.1.0-beta.1", prerelease=True)
+        self.release("1.1.0-beta.2", prerelease=True)
+        self.assertEqual([(APP, "proposed", "1.0.1: https://github.com/%s/pull/1" % THIS)], self.run_bot()[0])
+        self.assertEqual([(APP, "proposed", "1.1.0-beta.2: https://github.com/%s/pull/2" % THIS)], self.run_bot()[0])
+        self.assertEqual([(APP, "none", "1.0.1 was proposed before: the branch auto/com.example.app-1.0.1 is there; "
+                                        "1.1.0-beta.2 was proposed before: the branch "
+                                        "auto/com.example.app-1.1.0-beta.2 is there")], self.run_bot()[0])
+        self.assertEqual(["auto/com.example.app-1.0.1", "auto/com.example.app-1.1.0-beta.2"],
+                         list(self.github.pushed))
+
+    def test_a_pre_release_below_the_stable_version_offered_is_not_proposed(self):
+        self.release("1.1.0-rc.1", prerelease=True)
+        self.release("1.1.0")
+        self.assertEqual([(APP, "proposed", "1.1.0: https://github.com/%s/pull/1" % THIS)], self.run_bot()[0])
+        self.assertEqual("none", self.run_bot()[0][0][1])
+        self.assertEqual(["auto/com.example.app-1.1.0"], list(self.github.pushed))
+
+    def test_a_stable_version_below_a_pre_release_that_is_here_is_proposed(self):
+        self.add_record("1.1.0-beta.1", prerelease=True)
+        self.head = self.commit()
+        self.release("1.1.0-beta.1", prerelease=True)
+        self.release("1.0.1")
+        self.assertEqual([(APP, "proposed", "1.0.1: https://github.com/%s/pull/1" % THIS)], self.run_bot()[0])
+        self.assertEqual("com.example.app 1.0.1", self.github.pulls[0]["title"])
+        self.assertNotIn("channel", self.github.pushed["auto/com.example.app-1.0.1"][
+            "packages/com.example.app/versions/1.0.1.json"])
+
+    def test_a_pre_release_at_or_below_a_record_here_is_not_proposed(self):
+        self.add_record("1.1.0-beta.2", prerelease=True)
+        self.head = self.commit()
+        self.release("1.1.0-beta.1", prerelease=True)
+        self.release("1.1.0-beta.2", prerelease=True)
+        self.release("1.0.5", prerelease=True)
+        self.assertEqual([(APP, "none", "no release of %s offers a version above 1.1.0-beta.2" % WATCHED)],
+                         self.run_bot()[0])
+
+    def test_a_pre_release_here_whose_release_is_one_no_more_is_left_for_its_author_to_promote(self):
+        self.add_record("1.1.0", prerelease=True)
+        self.head = self.commit()
+        self.release("1.1.0")
+        outcomes = self.run_bot()[0]
+        self.assertEqual((APP, "none"), outcomes[0][:2])
+        self.assertIn("1.1.0 is a pre-release here, and its release is not one on GitHub any more", outcomes[0][2])
+        self.assertEqual(([], {}), (self.github.pulls, self.github.pushed))
+        # Something to propose comes first.
         self.release("1.0.1")
         self.assertEqual([(APP, "proposed", "1.0.1: https://github.com/%s/pull/1" % THIS)], self.run_bot()[0])
 
@@ -405,6 +497,14 @@ class ProposeTest(unittest.TestCase):
                           "::warning::com.example.app: declined: 1.1.0: bad%0A::add-mask::x\\x0d%25",
                           "::error::com.example.app: the bot failed: it%0Afailed"],
                          out.getvalue().split("\n")[:3])
+
+    def test_a_pre_releases_record_has_its_channel_after_its_date(self):
+        record = {"source": {"commit": COMMIT, "repo": WATCHED}, "channel": "prerelease", "released": "2026-11-13",
+                  "sha256": "ab" * 32, "url": WATCHED + "/releases/download/v1/com.example.app-1.0.0.nbtpkg"}
+        text = propose.format_record(record)
+        self.assertEqual(record, json.loads(text))
+        self.assertEqual(['  "released": "2026-11-13",', '  "channel": "prerelease",', '  "source": {'],
+                         text.split("\n")[3:6])
 
     def test_a_record_is_written_as_readme_shows_one(self):
         record = {"source": {"commit": COMMIT, "repo": WATCHED}, "notes": ["One", "Zwei ü"], "released": "2026-11-13",

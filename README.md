@@ -52,8 +52,13 @@ releases of the GitHub repo that the package's newest record names in `source.re
   }
   ```
 
-Drafts and pre-releases are left alone, as are all but the 30 newest releases, and of the versions above the
-newest one here only the newest is proposed. The bot runs
+Drafts are left alone, as are all but the 30 newest releases. A release that GitHub marks as a pre-release, or
+whose version has a pre-release part such as `1.4.0-beta.1`, is proposed as a
+[pre-release](CONTRIBUTING.md#a-pre-release): the bot gives its record `"channel": "prerelease"`, so the file
+need not have it. Of the stable versions above the newest stable one here only the newest is proposed, and of the
+pre-releases above every version here only the newest, the stable version first. The bot promotes nothing: once
+a release is no longer a pre-release on GitHub, the pull request that
+[promotes](CONTRIBUTING.md#promoting-a-pre-release) its version is yours to open. The bot runs
 [`tools/check.py`](tools/check.py) on the record first, and opens the pull request, on a branch
 `auto/<id>-<version>`, only if it passes; if it does not, nothing is opened. A version is proposed once: while its
 branch is here, it is not proposed again, even if its pull request is closed, and deleting the branch lets it be

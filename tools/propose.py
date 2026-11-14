@@ -12,17 +12,25 @@ For each package in packages/, the `source.repo` of its newest record is watched
 https://github.com/<owner>/<repo>, nothing more. A package is only ever added by hand, and its first pull request
 is what has it watched.
 
-The first page of the watched repo's releases is read, without its drafts and pre-releases. A release that holds
-an asset named nbtpkg-record.json and one archive named <id>-<version>.nbtpkg offers that version. The newest
-version offered that is above the newest record here is proposed, unless this repo already has the branch
-auto/<id>-<version>: a version is proposed once, even if its pull request is closed, and deleting the branch lets
-it be proposed again. Versions are ordered as semver 2.0.0 orders them, as the NBTApps agent does.
+The first page of the watched repo's releases is read, without its drafts. A release that holds an asset named
+nbtpkg-record.json and one archive named <id>-<version>.nbtpkg offers that version. It offers it as a pre-release
+if GitHub marks the release as one, or if the version has a pre-release part, such as 1.4.0-beta.1, and as a
+stable version otherwise. Two versions are looked for, and the first of them that was not proposed before is
+proposed:
+  - the newest stable version offered that is above the newest stable record here
+  - the newest pre-release offered that is above every record here, and above that stable version
+A version that has a record here is never proposed, so the bot promotes nothing: a pre-release here whose release
+is no longer one on GitHub is promoted by a pull request of the author's own, and the bot says so. A version is
+proposed once: not while this repo has the branch auto/<id>-<version>, even if its pull request is closed, and
+deleting the branch lets it be proposed again. Versions are ordered as semver 2.0.0 orders them, as the NBTApps
+agent does.
 
 The release's nbtpkg-record.json is {"id", "version", "record"} and nothing else, at most 64 KiB of JSON with no
 key twice. `id` is the package's, `version` is the archive's, and `record` is a version's record that
 schema/version.schema.json takes, whose `url` is the archive in that same release of the watched repo,
 https://github.com/<owner>/<repo>/releases/download/<tag>/<id>-<version>.nbtpkg, and whose `source.repo` is the
-watched repo.
+watched repo. The record of a pre-release is given "channel": "prerelease" here, so the file need not have it;
+a file that has it in a release that offers a stable version is declined.
 
 The record is then written to packages/<id>/versions/<version>.json and committed, in a worktree of its own, and
 tools/check.py checks it as the check on a pull request does: the archive is fetched and must be the file `sha256`
@@ -61,7 +69,7 @@ API = "https://api.github.com"
 BASE_BRANCH = "main"
 BRANCH_PREFIX = "auto/"
 RECORD_ASSET = "nbtpkg-record.json"
-RECORD_FIELDS = ("url", "sha256", "released", "notes", "source")
+RECORD_FIELDS = ("url", "sha256", "released", "channel", "notes", "source")
 MAX_API_BYTES = 8 << 20
 MAX_RECORD_BYTES = 64 << 10
 BOT = ("github-actions[bot]", "41898282+github-actions[bot]@users.noreply.github.com")
@@ -173,17 +181,28 @@ def shown(value):
     return text if len(text) <= 80 else text[:77] + "..."
 
 
-def newest_record(root, pkg_id):
-    """(version, record) of the package's newest record here, or None."""
+def records_here(root, pkg_id):
+    """{version: its record, or None if it cannot be read} of the package's records here."""
     folder = os.path.join(root, "packages", pkg_id, "versions")
     names = sorted(os.listdir(folder)) if os.path.isdir(folder) else []
     versions = [name[:-len(".json")] for name in names
                 if name.endswith(".json") and check._VERSION.fullmatch(name[:-len(".json")])]
-    if not versions:
+    return {version: check.read_json(os.path.join(folder, version + ".json"))[0] for version in versions}
+
+
+def newest_record(root, pkg_id):
+    """(version, record) of the package's newest record here, or None."""
+    here = records_here(root, pkg_id)
+    if not here:
         return None
-    version = max(versions, key=version_key)
-    record, _ = check.read_json(os.path.join(folder, version + ".json"))
-    return (version, record) if record is not None else None
+    version = max(here, key=version_key)
+    return (version, here[version]) if here[version] is not None else None
+
+
+def is_prerelease_here(record):
+    """Whether a record here is a pre-release's. One that cannot be read counts as stable: nothing is proposed
+    past it that a stable version would stop."""
+    return isinstance(record, dict) and record.get("channel") == check.PRERELEASE
 
 
 def parse_json(data):
@@ -206,14 +225,15 @@ def parse_json(data):
 
 
 def offered(pkg_id, releases):
-    """[(version, release, record asset)] of the releases that offer a version: not a draft or a pre-release, with
-    an asset nbtpkg-record.json and one archive <id>-<version>.nbtpkg, both uploaded in full."""
+    """[(version, release, record asset, whether it is a pre-release)] of the releases that offer a version: not a
+    draft, with an asset nbtpkg-record.json and one archive <id>-<version>.nbtpkg, both uploaded in full. A
+    version is a pre-release if GitHub marks its release as one, or if it has a pre-release part."""
     if not isinstance(releases, list):
         raise BotError("the API's list of releases is not a list")
     found = []
     for release in releases:
         if (not isinstance(release, dict) or release.get("draft") is not False
-                or release.get("prerelease") is not False):
+                or not isinstance(release.get("prerelease"), bool)):
             continue
         if not isinstance(release.get("tag_name"), str) or not release["tag_name"]:
             continue
@@ -225,12 +245,14 @@ def offered(pkg_id, releases):
                     if name.startswith(prefix) and name.endswith(suffix)]
         versions = [v for v in versions if check._VERSION.fullmatch(v)]
         if RECORD_ASSET in named and len(versions) == 1:
-            found.append((versions[0], release, named[RECORD_ASSET]))
+            tagged = check._VERSION.fullmatch(versions[0]).group(4) is not None
+            found.append((versions[0], release, named[RECORD_ASSET], release["prerelease"] or tagged))
     return found
 
 
-def release_record(pkg_id, version, owner, repo, release, asset, schema):
-    """The record in a release's nbtpkg-record.json, once it keeps to the contract. Raises Declined."""
+def release_record(pkg_id, version, owner, repo, release, asset, schema, prerelease=False):
+    """The record in a release's nbtpkg-record.json, once it keeps to the contract, and with "channel" if the
+    release offers a `prerelease`. Raises Declined."""
     watched = "https://github.com/%s/%s" % (owner, repo)
     downloads = "/%s/%s/releases/download/" % (owner, repo)
     tag = release["tag_name"]
@@ -278,6 +300,12 @@ def release_record(pkg_id, version, owner, repo, release, asset, schema):
         raise Declined("\"record\": \"url\" is not in the release the record is in")
     if record["source"]["repo"] != watched:
         raise Declined("\"record\": \"source.repo\" is %s, not %s" % (shown(record["source"]["repo"]), watched))
+    if prerelease:
+        # The release says so, whether or not the file does.
+        return dict(record, channel=check.PRERELEASE)
+    if "channel" in record:
+        raise Declined("\"record\" has \"channel\": \"%s\", and the release is not marked as a pre-release on GitHub"
+                       % check.PRERELEASE)
     return record
 
 
@@ -306,6 +334,7 @@ def fenced(text):
 
 
 def pull_body(pkg_id, version, owner, repo, tag, record, before, output):
+    prerelease = record.get("channel") == check.PRERELEASE
     release = "https://github.com/%s/%s/releases/tag/%s" % (owner, repo, urllib.parse.quote(tag, safe=""))
     changes = ("https://github.com/%s/%s/compare/%s...%s" % (owner, repo, before, record["source"]["commit"])
                if before else "https://github.com/%s/%s/commit/%s" % (owner, repo, record["source"]["commit"]))
@@ -313,13 +342,19 @@ def pull_body(pkg_id, version, owner, repo, tag, record, before, output):
         "<!-- Opened by .github/workflows/propose.yml with tools/propose.py, not by the package's author. -->",
         "",
         "**Package:** `%s`" % pkg_id,
-        "**This adds:** version %s" % version,
+        "**This adds:** version %s%s" % (version, ", a pre-release" if prerelease else ""),
         "",
         "A bot proposed this pull request from the author's own release, %s. The release holds the archive and "
         "`%s`, and the record in that file is added here as `packages/%s/versions/%s.json`. The author did not "
         "open this pull request: the package's first pull request accepted the listing agreement for the versions "
         "proposed from its releases, as CONTRIBUTING.md says." % (release, RECORD_ASSET, pkg_id, version),
         "",
+    ] + ([
+        "The release is a pre-release on GitHub, or its version has a pre-release part, so the record has "
+        "`\"channel\": \"%s\"`: the app offers this version only to those who ask for pre-releases."
+        % check.PRERELEASE,
+        "",
+    ] if prerelease else []) + [
         "### What it does on a head unit",
         "",
         "Not written by the bot. The source's changes since the newest version here: %s" % changes,
@@ -387,6 +422,31 @@ def check_record(tree, start, pkg_id, version, record):
     return output, report.errors
 
 
+def candidates_of(offers, here):
+    """What there is to propose of `offers`, as offered() gives them, to a package with the records `here`, as
+    records_here() gives them: ([offer], version or None). The offers are at most two, the stable one first: the
+    newest stable version above the newest stable record, and the newest pre-release above every record and above
+    that stable version, which would otherwise be listed no longer once both are in. No offer is of a version
+    that has a record. The version is the newest that is a pre-release here and that a release now offers as
+    stable: one for its author to promote."""
+    def newest(versions):
+        return max(versions, key=version_key) if versions else None
+
+    def above(version, floor):
+        return floor is None or version_key(version) > version_key(floor)
+
+    # Build metadata is no part of a version's order, so 1.0.0+build.2 is the version 1.0.0 that is here.
+    taken = {version_key(version) for version in here}
+    stable_here = newest([version for version, record in here.items() if not is_prerelease_here(record)])
+    stable = [o for o in offers if not o[3] and above(o[0], stable_here) and version_key(o[0]) not in taken]
+    stable = max(stable, key=lambda o: version_key(o[0])) if stable else None
+    floor = newest(list(here) + ([stable[0]] if stable else []))
+    pre = [o for o in offers if o[3] and above(o[0], floor)]
+    pre = max(pre, key=lambda o: version_key(o[0])) if pre else None
+    promotable = newest([o[0] for o in offers if not o[3] and is_prerelease_here(here.get(o[0]))])
+    return [o for o in (stable, pre) if o is not None], promotable
+
+
 def propose_package(root, start, this_repo, pkg_id, token, dry_run, schema, out):
     """What becomes of one package's newest release. Raises BotError."""
     newest = newest_record(root, pkg_id)
@@ -404,16 +464,25 @@ def propose_package(root, start, this_repo, pkg_id, token, dry_run, schema, out)
         releases = api("GET", "/repos/%s/%s/releases?per_page=30" % (owner, repo), token)
     except NotFound:
         return Outcome(pkg_id, "declined", "%s cannot be found on GitHub" % source["repo"])
-    newer = [o for o in offered(pkg_id, releases) if version_key(o[0]) > version_key(here)]
-    if not newer:
+    candidates, promotable = candidates_of(offered(pkg_id, releases), records_here(root, pkg_id))
+    waiting = []
+    for candidate in candidates:
+        branch = "%s%s-%s" % (BRANCH_PREFIX, pkg_id, candidate[0])
+        if not branch_exists(this_repo, branch, token):
+            break
+        waiting.append("%s was proposed before: the branch %s is there" % (candidate[0], branch))
+    else:
+        if waiting:
+            return Outcome(pkg_id, "none", "; ".join(waiting))
+        if promotable:
+            return Outcome(pkg_id, "none", "%s is a pre-release here, and its release is not one on GitHub any more: "
+                                           "the bot promotes nothing, a pull request that takes \"channel\" out of "
+                                           "its record does" % promotable)
         return Outcome(pkg_id, "none", "no release of %s offers a version above %s" % (source["repo"], here))
-    version, release, asset = max(newer, key=lambda o: version_key(o[0]))
-    branch = "%s%s-%s" % (BRANCH_PREFIX, pkg_id, version)
-    if branch_exists(this_repo, branch, token):
-        return Outcome(pkg_id, "none", "%s was proposed before: the branch %s is there" % (version, branch))
+    version, release, asset, prerelease = candidate
 
     try:
-        record = release_record(pkg_id, version, owner, repo, release, asset, schema)
+        record = release_record(pkg_id, version, owner, repo, release, asset, schema, prerelease)
     except Declined as e:
         return Outcome(pkg_id, "declined", "%s: %s" % (version, e))
 
@@ -421,7 +490,7 @@ def propose_package(root, start, this_repo, pkg_id, token, dry_run, schema, out)
         output, errors = check_record(tree, start, pkg_id, version, record)
         if errors:
             return Outcome(pkg_id, "declined", "%s: tools/check.py fails on the record:\n%s" % (version, output))
-        title = "%s %s" % (pkg_id, version)
+        title = "%s %s%s" % (pkg_id, version, " (pre-release)" if prerelease else "")
         body = pull_body(pkg_id, version, owner, repo, release["tag_name"], record, before_commit, output)
         if dry_run:
             print("--- would push %s and open the pull request \"%s\" against %s, which adds "

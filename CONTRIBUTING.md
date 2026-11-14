@@ -65,7 +65,8 @@ is never changed: a fix is a new version.
 
 A version for those who want to try what is not finished is published as any new version is, with one key more
 in its record: `"channel": "prerelease"`. The app offers it only to those who ask for pre-releases. It is
-reviewed and accepted as any version is, and a package may start with pre-releases alone.
+reviewed and accepted as any version is, and a package may start with pre-releases alone. The bot proposes one
+from a release that GitHub marks as a pre-release, and writes that key itself.
 
 Choose its version for what comes next:
 
@@ -83,7 +84,8 @@ Open a pull request that takes the line `"channel": "prerelease",` out of the ve
 nothing else, not even the notes. The check names it as a promotion and fetches nothing: the archive is the one
 that was accepted, and it needs no second review. A stable version's dependencies are met by stable versions,
 so promote what it depends on first. A stable version is never made a pre-release again; one that turns out bad
-is taken out.
+is taken out. The bot does not open this pull request: taking the pre-release mark off a release on GitHub
+changes nothing here.
 
 ## Taking a version out
 
