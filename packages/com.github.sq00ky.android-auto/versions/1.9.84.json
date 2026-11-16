@@ -1,0 +1,12 @@
+{
+  "url": "https://github.com/Sq00ky/Supra-iDrive6-Android-Auto/releases/download/v1.9.84-about/com.github.sq00ky.android-auto-1.9.84.nbtpkg",
+  "sha256": "12555239bad8aa5fc2b717ed883d3e7a5d560e31a6ed4dcc03a21bac3c24c316",
+  "released": "2026-11-16",
+  "notes": [
+    "v1.9.84 - Nav prompts over the radio, BT beta checkbox, About credits"
+  ],
+  "source": {
+    "repo": "https://github.com/Sq00ky/Supra-iDrive6-Android-Auto",
+    "commit": "4b106aa1a2f9e8cbed0c935872a46bc461f50f01"
+  }
+}
