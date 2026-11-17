@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/Sq00ky/Supra-iDrive6-Android-Auto/releases/download/v1.9.91-sppreq3/com.github.sq00ky.android-auto-1.9.91.nbtpkg",
+  "sha256": "b176f4e308fea5eca02480c0652e3635a274980b28f4ed5e534d263a6e95fdfa",
+  "released": "2026-11-17",
+  "notes": ["v1.9.91 - Settings auto-restart, steadier Bluetooth hand-off"],
+  "source": {
+    "repo": "https://github.com/Sq00ky/Supra-iDrive6-Android-Auto",
+    "commit": "441b389c422092028aa13af6a68abad973aefa2b"
+  }
+}
