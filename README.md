@@ -161,7 +161,10 @@ that is not above the package's newest stable version is not listed.
 - **Logs.** A package that keeps logs names them in its manifest's `logs`, so the NBTApps app can fetch them from
   the head unit when a user asks, zip them and let the user send them on. Name your own files only: under
   `${app}`, `${data}`, or `${tmp}`, your package's own folder on the head unit's RAM disk, which a power down
-  empties and which spares its flash; or a fixed path under `/tmp` or `/var` that a ported program writes to. A
+  empties and which spares its flash; a fixed path under `/tmp` or `/var` that a ported program writes to; or one
+  file named in full in `/dev/shmem`, the head unit's shared memory, with no wildcard and no folder, as other
+  programs keep their files there. A path in any other folder is refused here, though an agent would install the
+  package and skip that log. A
   user shares these files with whoever asked for them, so a log does not record where the car has been or anything
   personal, such as phone numbers, contacts or names. Keep each log short: rotate it, and keep two or three files
   of at most a few hundred KB. The head unit's `/tmp` holds 14 MB for everything on it.
