@@ -1,0 +1,15 @@
+{
+  "url": "https://github.com/wujiaming109/id6-dashboard-nbtpkg/raw/main/com.github.inotbarnacle.dashboard-1.0.0.nbtpkg",
+  "sha256": "138e24d22e973149cbf57cd93da5e684e2005b74b11642313011989a0efce59f",
+  "released": "2026-11-17",
+  "notes": [
+    "First version: the four dashboard plugin apps from ID6_apps_prerelease, packaged as an .nbtpkg.",
+    "The apps are inotbarnacle's work and are redistributed unmodified; this package only adds the manifest, install.files, gateway-ip.txt and signing.",
+    "gateway-ip.txt ships 192.0.2.1 and must be set to the car's diagnostic gateway before use.",
+    "Connector ids 100, 102, 103, 104 (Etch); no focus id."
+  ],
+  "source": {
+    "repo": "https://github.com/inotbarnacle/ID6_apps_prerelease",
+    "commit": "79001aaab9847bc8bd2a8494e1516298ab9a4de4"
+  }
+}
