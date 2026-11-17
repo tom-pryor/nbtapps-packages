@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/Sq00ky/Supra-iDrive6-Android-Auto/releases/download/v1.9.94-wfdssid/com.github.sq00ky.android-auto-1.9.94.nbtpkg",
+  "sha256": "ef35c42a6d37729c57188671d87e829901c047dcbe0f924afb9bb7fe7451d506",
+  "released": "2026-11-17",
+  "notes": ["v1.9.94 - Wi-Fi Direct: network name from the car"],
+  "source": {
+    "repo": "https://github.com/Sq00ky/Supra-iDrive6-Android-Auto",
+    "commit": "9771a9fbf100a698f44ff45c3fc016ccfbb8fe88"
+  }
+}
