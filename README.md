@@ -174,6 +174,8 @@ that is not above the package's newest stable version is not listed.
   plain text: never `source` it, `eval` it or put a value into a command, because a value is whatever a user typed.
   List only settings your program reads, with defaults and limits that match what it does. A setting does not
   hold a password or anything else secret, because the file is plain text and a user may share it.
+  [A package's settings](https://github.com/tom-pryor/nbtapps/blob/main/headunit/README.md#a-packages-settings)
+  in the NBTApps README has the fields, what the agent does with the file, and a way to read it in a script.
 - **`author.pub`** stays the same from version to version. A pull request that changes it is treated as a change
   of owner: say why in it, and expect to be asked to show that you hold the old key.
 
