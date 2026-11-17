@@ -165,6 +165,12 @@ that is not above the package's newest stable version is not listed.
   user shares these files with whoever asked for them, so a log does not record where the car has been or anything
   personal, such as phone numbers, contacts or names. Keep each log short: rotate it, and keep two or three files
   of at most a few hundred KB. The head unit's `/tmp` holds 14 MB for everything on it.
+- **Settings.** A package whose program has settings may name them in its manifest's `settings`, so a user can
+  change them from the NBTApps app. They are kept as `KEY=value` lines in one file of your own under `${data}`,
+  which the app changes a line at a time and your program reads. Read it line by line and take each value as
+  plain text: never `source` it, `eval` it or put a value into a command, because a value is whatever a user typed.
+  List only settings your program reads, with defaults and limits that match what it does. A setting does not
+  hold a password or anything else secret, because the file is plain text and a user may share it.
 - **`author.pub`** stays the same from version to version. A pull request that changes it is treated as a change
   of owner: say why in it, and expect to be asked to show that you hold the old key.
 
@@ -183,7 +189,7 @@ python3 tools/check.py --nbtapps ../nbtapps/headunit
 
 Passing the check is not being accepted. At review, the archive is fetched from your `url` and must be the file the record pins, signed by `author.pub`,
 and must pass every check the catalogue's own packages pass. The source is read at `source.commit`, and the
-package's install scripts, what it places on the head unit and the logs it names are looked at in particular. A package runs with
+package's install scripts, what it places on the head unit, the logs it names and how its program reads its settings are looked at in particular. A package runs with
 full access to a car's head unit. One that is not clear about what it does, or that a maintainer cannot follow,
 is not accepted.
 
