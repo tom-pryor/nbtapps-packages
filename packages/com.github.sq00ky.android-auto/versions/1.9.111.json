@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/Sq00ky/Supra-iDrive6-Android-Auto/releases/download/v1.9.111-cluster/com.github.sq00ky.android-auto-1.9.111.nbtpkg",
+  "sha256": "9063f4c55f403c4919cef2444e718579add227e005fac4700d0dd30013d8cea9",
+  "released": "2026-11-18",
+  "notes": ["v1.9.111 - Gauge cluster type in the menu"],
+  "source": {
+    "repo": "https://github.com/Sq00ky/Supra-iDrive6-Android-Auto",
+    "commit": "f288ab949e52827bf2afd867e59e2b4bebe0769b"
+  }
+}
