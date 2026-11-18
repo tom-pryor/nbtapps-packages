@@ -153,10 +153,12 @@ that is not above the package's newest stable version is not listed.
   stable versions in the catalogue, and a pre-release's by any version it lists.
 - **The source** is a public repo, and `source.commit` is the commit the archive was built from.
 - **Stock files.** A package does not replace a file of the head unit's own software.
-- **iDrive plugins.** A package that installs into `${plugins}` asks for an HMI restart or a reboot, and its
-  connector and focus ids are given to it by the catalogue, so that no two packages use the same one. The ids
-  that are taken are listed at `https://catalogue.nbtapps.com/v1/hmi-ids.json`: choose others, and name the ids
-  your plugin uses in the pull request.
+- **iDrive plugins.** A package that installs into `${plugins}` or, from agent 1.6.0, into `${var_plugins}`, the
+  two folders the HMI loads plugins from, asks for an HMI restart or a reboot, and its connector and focus ids
+  are given to it by the catalogue, so that no two packages use the same one. Its plugin's name, the folder its
+  `.manifest` goes into, is not the name of another package's plugin in either folder. The ids that are taken
+  are listed at `https://catalogue.nbtapps.com/v1/hmi-ids.json`: choose others, and name the ids your plugin
+  uses in the pull request.
 - **Dependencies** are on packages the catalogue lists.
 - **Logs.** A package that keeps logs names them in its manifest's `logs`, so the NBTApps app can fetch them from
   the head unit when a user asks, zip them and let the user send them on. Name your own files only: under

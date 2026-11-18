@@ -10,7 +10,8 @@
 
 ### iDrive plugin ids
 
-<!-- If the package installs into ${plugins}: the connector and focus ids the plugin uses. Otherwise: none. -->
+<!-- If the package installs into ${plugins} or ${var_plugins}: the connector and focus ids the plugin uses.
+     Otherwise: none. -->
 
 ### Tested on
 
