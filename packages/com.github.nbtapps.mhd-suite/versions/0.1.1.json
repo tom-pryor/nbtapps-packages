@@ -1,0 +1,13 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/mhd-suite-v0.1.1/com.github.nbtapps.mhd-suite-0.1.1.nbtpkg",
+  "sha256": "87c8ef324885f0d06c931d5d25e5e83a9a30ae9f9783873aa906e7472e37cad7",
+  "released": "2026-11-19",
+  "channel": "prerelease",
+  "notes": [
+    "First package for NBTApps"
+  ],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "96dda2cd022312e3e7e1ef4e0bebce3ae405f186"
+  }
+}
