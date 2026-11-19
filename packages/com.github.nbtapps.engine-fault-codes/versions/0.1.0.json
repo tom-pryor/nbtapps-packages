@@ -1,0 +1,13 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/engine-fault-codes-v0.1.0/com.github.nbtapps.engine-fault-codes-0.1.0.nbtpkg",
+  "sha256": "10053d3c4e82404b9f5c10968fca0c64b06a0204ef117a4c914affe225bce283",
+  "released": "2026-11-19",
+  "channel": "prerelease",
+  "notes": [
+    "First package for NBTApps"
+  ],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "fac7d09948d6ba2bf492bc76988176db5c3fa3f4"
+  }
+}
