@@ -1,0 +1,13 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/xdrive-control-v0.1.1/com.github.nbtapps.xdrive-control-0.1.1.nbtpkg",
+  "sha256": "f08833386f63197f806976a158a7941bc637e6a6c6627b63d042d04e568d745a",
+  "released": "2026-11-19",
+  "channel": "prerelease",
+  "notes": [
+    "First package for NBTApps"
+  ],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "96dda2cd022312e3e7e1ef4e0bebce3ae405f186"
+  }
+}
