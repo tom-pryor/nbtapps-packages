@@ -1,0 +1,13 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/boostdeck-v0.1.1/com.github.nbtapps.boostdeck-0.1.1.nbtpkg",
+  "sha256": "577613f5d67ca61789e430f145c56a59d8c3900ad41fa492696ce734150d123e",
+  "released": "2026-11-19",
+  "channel": "prerelease",
+  "notes": [
+    "First package for NBTApps"
+  ],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "96dda2cd022312e3e7e1ef4e0bebce3ae405f186"
+  }
+}
