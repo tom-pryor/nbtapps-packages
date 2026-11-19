@@ -1,0 +1,13 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/road-jet-v0.1.1/com.github.nbtapps.road-jet-0.1.1.nbtpkg",
+  "sha256": "f662034028947302f21b15c0af0408e7bde2bb65627d8d89ef6c116427b58572",
+  "released": "2026-11-19",
+  "channel": "prerelease",
+  "notes": [
+    "First package for NBTApps"
+  ],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "96dda2cd022312e3e7e1ef4e0bebce3ae405f186"
+  }
+}
