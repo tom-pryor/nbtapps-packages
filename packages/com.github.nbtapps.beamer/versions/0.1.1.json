@@ -1,0 +1,13 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/beamer-v0.1.1/com.github.nbtapps.beamer-0.1.1.nbtpkg",
+  "sha256": "dfbd25c1b649ec43c449fc4dc48a44c9248b8a834534ee3415ef3bc0053d2c80",
+  "released": "2026-11-19",
+  "channel": "prerelease",
+  "notes": [
+    "First package for NBTApps"
+  ],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "96dda2cd022312e3e7e1ef4e0bebce3ae405f186"
+  }
+}
