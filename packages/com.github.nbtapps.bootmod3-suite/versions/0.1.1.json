@@ -1,0 +1,13 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/bootmod3-suite-v0.1.1/com.github.nbtapps.bootmod3-suite-0.1.1.nbtpkg",
+  "sha256": "3300160d5c7431de333947348b1aa57928dc2adab07d7a623ad0f0120ea579fd",
+  "released": "2026-11-19",
+  "channel": "prerelease",
+  "notes": [
+    "First package for NBTApps"
+  ],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "96dda2cd022312e3e7e1ef4e0bebce3ae405f186"
+  }
+}
