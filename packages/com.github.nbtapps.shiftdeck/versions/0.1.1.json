@@ -1,0 +1,13 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/shiftdeck-v0.1.1/com.github.nbtapps.shiftdeck-0.1.1.nbtpkg",
+  "sha256": "377a40bdb55d52c10ae4b783d060873150da9f9948b8342cac1d45a88ab52cab",
+  "released": "2026-11-19",
+  "channel": "prerelease",
+  "notes": [
+    "First package for NBTApps"
+  ],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "96dda2cd022312e3e7e1ef4e0bebce3ae405f186"
+  }
+}
