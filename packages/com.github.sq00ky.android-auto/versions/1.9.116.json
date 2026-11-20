@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/Sq00ky/Supra-iDrive6-Android-Auto/releases/download/v1.9.116/com.github.sq00ky.android-auto-1.9.116.nbtpkg",
+  "sha256": "f4cf5b15a337c532e4e0179f732bdbd353b5cb23c4dded8364664735e319bb07",
+  "released": "2026-11-20",
+  "notes": ["v1.9.116"],
+  "source": {
+    "repo": "https://github.com/Sq00ky/Supra-iDrive6-Android-Auto",
+    "commit": "4328560e33d622243b68e8e1bb0766180fd954e5"
+  }
+}
