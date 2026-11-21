@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/mhd-suite-v0.1.2/com.github.nbtapps.mhd-suite-0.1.2.nbtpkg",
+  "sha256": "5c6246b1009b01070abd558d1104d727dbd4513ea4f98fa1a488d86750511ed0",
+  "released": "2026-11-21",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.4: shows the last map and Max Cooling settings the DME acknowledged, and waits up to three seconds for the gateway"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "a966db41f938d5b3b74c2292878582f1081c2524"
+  }
+}
