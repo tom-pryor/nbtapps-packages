@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/engine-fault-codes-v0.1.2/com.github.nbtapps.engine-fault-codes-0.1.2.nbtpkg",
+  "sha256": "07a4e647dcbb27ead5e0f40071803f85f7339131282b4e9e99307ab7b1978156",
+  "released": "2026-11-21",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.4: waits up to three seconds for another app to free the diagnostic gateway"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "a966db41f938d5b3b74c2292878582f1081c2524"
+  }
+}
