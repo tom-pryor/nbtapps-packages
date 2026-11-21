@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/road-jet-v0.1.2/com.github.nbtapps.road-jet-0.1.2.nbtpkg",
+  "sha256": "dd3c2e80c348d725c36e9079e087c29f4b0637e666dd7f1dccd86213f76ad860",
+  "released": "2026-11-21",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.4: looks for the diagnostic gateway on the link when 169.254.21.3 does not answer, and reads one gateway-ip.txt for every app"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "a966db41f938d5b3b74c2292878582f1081c2524"
+  }
+}
