@@ -1,0 +1,13 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/launchdeck-v0.1.0/com.github.nbtapps.launchdeck-0.1.0.nbtpkg",
+  "sha256": "c42d3cc4887f26a7650e642245c6bb48e33dd4f5f7ad5842d64cf1bcca6c908e",
+  "released": "2026-11-21",
+  "channel": "prerelease",
+  "notes": [
+    "First package for NBTApps"
+  ],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "44e6227221d2a8e32a396bb0b6f1c38d43478a15"
+  }
+}
