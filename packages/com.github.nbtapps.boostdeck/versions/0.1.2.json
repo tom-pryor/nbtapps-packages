@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/boostdeck-v0.1.2/com.github.nbtapps.boostdeck-0.1.2.nbtpkg",
+  "sha256": "cdbacd45487c3da2d1da08b4b7394aa72755c5a55f094bb95b17f29d2d406cb2",
+  "released": "2026-11-21",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.4: nine gauge positions you choose, saved for gasoline and diesel layouts, with new readings such as oil temperature, RPM and fuel rate"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "a966db41f938d5b3b74c2292878582f1081c2524"
+  }
+}
