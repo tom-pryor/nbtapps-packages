@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/bootmod3-suite-v0.1.2/com.github.nbtapps.bootmod3-suite-0.1.2.nbtpkg",
+  "sha256": "6e8c2787cb8e4bb0f90e5d63b4ac34561ffcb87d86b17bd9513264e39bf92bcf",
+  "released": "2026-11-21",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.4: reads the active map slot by itself and says more exactly why a car is not supported"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "a966db41f938d5b3b74c2292878582f1081c2524"
+  }
+}
