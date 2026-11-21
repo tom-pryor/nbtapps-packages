@@ -1,0 +1,13 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/hud-gauges-v0.1.1/com.github.nbtapps.hud-gauges-0.1.1.nbtpkg",
+  "sha256": "af6ab7d9c1c91e01a17aca55f9ad02415bb9a07d3e0442b3fc1898ea14de2579",
+  "released": "2026-11-21",
+  "channel": "prerelease",
+  "notes": [
+    "First package for NBTApps"
+  ],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "f52ec609d3908bed2bb2879fb50a2f2cc2c6a3e3"
+  }
+}
