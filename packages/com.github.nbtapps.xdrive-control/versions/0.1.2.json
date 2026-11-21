@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/xdrive-control-v0.1.2/com.github.nbtapps.xdrive-control-0.1.2.nbtpkg",
+  "sha256": "d707307a6738acf4cfa226471e177b0f74bac5482f702f648dc54fa952875807",
+  "released": "2026-11-21",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.4: supports DSC_25 (0F1860) with LMV 0F1480, where switching needs the engine running, Park and zero speed"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "a966db41f938d5b3b74c2292878582f1081c2524"
+  }
+}
