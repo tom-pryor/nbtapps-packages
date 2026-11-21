@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/beamer-v0.1.2/com.github.nbtapps.beamer-0.1.2.nbtpkg",
+  "sha256": "b3a60e1d7ea6b6a4586532c2a6b76de5d7b6483bacde7978e71101ccce502dec",
+  "released": "2026-11-21",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.4: looks for the diagnostic gateway on the link when 169.254.21.3 does not answer, and reads one gateway-ip.txt for every app"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "a966db41f938d5b3b74c2292878582f1081c2524"
+  }
+}
