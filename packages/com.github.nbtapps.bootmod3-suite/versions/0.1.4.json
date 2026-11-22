@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/bootmod3-suite-v0.1.4/com.github.nbtapps.bootmod3-suite-0.1.4.nbtpkg",
+  "sha256": "4a16f6f66b2beae3d8b9890d4ff97ec6b67a7f1bab1bcb1c209e3033b802d514",
+  "released": "2026-11-22",
+  "channel": "prerelease",
+  "notes": ["Layouts by upstream's current rule: own ones at 800x480 and 960x480, the 1280x480 one scaled at 1440x540 and 1920x720, so nothing is cut off. MG Flasher, new, cannot be installed beside it"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "f27d425010c31774e7216d917ac896dbffbc2c46"
+  }
+}
