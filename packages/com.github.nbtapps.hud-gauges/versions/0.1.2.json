@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/hud-gauges-v0.1.2/com.github.nbtapps.hud-gauges-0.1.2.nbtpkg",
+  "sha256": "3ca45ae664c6bf63cb2965ce0fbaaae8b06632d056a5483bb47f99c5951712a3",
+  "released": "2026-11-22",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.6: on until iDrive next restarts, not remembered; does not start with native Android Auto or CarPlay Advanced's HUD; uses BoostDeck's and ShiftDeck's readings while they are open"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "57e8e4dd6ee4f7504805b296e9d4219b29965e1a"
+  }
+}
