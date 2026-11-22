@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/mhd-suite-v0.1.3/com.github.nbtapps.mhd-suite-0.1.3.nbtpkg",
+  "sha256": "f174a5da0e5cdf897a32b7e633204134d751fab2d8f38accf53067449dd65a5a",
+  "released": "2026-11-22",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.6: a map command is sent once, after the app has the diagnostic gateway"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "57e8e4dd6ee4f7504805b296e9d4219b29965e1a"
+  }
+}
