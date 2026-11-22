@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/mg-flasher-v0.1.0/com.github.nbtapps.mg-flasher-0.1.0.nbtpkg",
+  "sha256": "d0b942fe2d52d60778a511725ae73bbb6a4b878ce501ad51ef754df540056c03",
+  "released": "2026-11-22",
+  "channel": "prerelease",
+  "notes": ["First package for NBTApps"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "f27d425010c31774e7216d917ac896dbffbc2c46"
+  }
+}

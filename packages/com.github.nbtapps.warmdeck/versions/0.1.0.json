@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/warmdeck-v0.1.0/com.github.nbtapps.warmdeck-0.1.0.nbtpkg",
+  "sha256": "0ef605a68ac0e6011bbf34371ce905747326ffe1d2c35d07dd261536d6efa6ff",
+  "released": "2026-11-22",
+  "channel": "prerelease",
+  "notes": ["First package for NBTApps"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "f27d425010c31774e7216d917ac896dbffbc2c46"
+  }
+}
