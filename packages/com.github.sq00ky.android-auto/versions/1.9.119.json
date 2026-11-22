@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/Sq00ky/Supra-iDrive6-Android-Auto/releases/download/v1.9.119-hudprofiles/com.github.sq00ky.android-auto-1.9.119.nbtpkg",
+  "sha256": "69df6491b2c611bf57e3ca262cc9625ce6e17d7b43ec98fb4097fbcfb6a7a3b0",
+  "released": "2026-11-22",
+  "notes": ["v1.9.119-hudprofiles"],
+  "source": {
+    "repo": "https://github.com/Sq00ky/Supra-iDrive6-Android-Auto",
+    "commit": "b4bc38eafed98b5a9c3a1c2aac41f4796553f5d1"
+  }
+}
