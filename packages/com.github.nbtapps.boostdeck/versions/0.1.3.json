@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/boostdeck-v0.1.3/com.github.nbtapps.boostdeck-0.1.3.nbtpkg",
+  "sha256": "18a982744fc726fd20d6cdc5f161048e39d4e3daa181736d175bb1f36fb7c5be",
+  "released": "2026-11-22",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.6: separate pressure, speed and temperature units, circular dials, coolant, oil temperature and oil pressure alerts with an optional chime, and the ethanol gauge labelled E%"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "57e8e4dd6ee4f7504805b296e9d4219b29965e1a"
+  }
+}
