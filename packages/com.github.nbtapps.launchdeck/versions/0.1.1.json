@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/launchdeck-v0.1.1/com.github.nbtapps.launchdeck-0.1.1.nbtpkg",
+  "sha256": "081f8994246e4d481a98db729cf73e342395ca9fdc037d679b2e2e6bc90b5595",
+  "released": "2026-11-22",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.6: its own telemetry port, so it no longer clashes with BoostDeck, and HUD Gauges clears the HUD while it is open"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "57e8e4dd6ee4f7504805b296e9d4219b29965e1a"
+  }
+}
