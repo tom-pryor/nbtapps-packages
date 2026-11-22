@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/engine-fault-codes-v0.1.3/com.github.nbtapps.engine-fault-codes-0.1.3.nbtpkg",
+  "sha256": "d1adf00fbab9f1148c5542dc043d2833d07482345abf13050b9e6badda5707e7",
+  "released": "2026-11-22",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.6: after a clear it reads the codes again and says if any are left, and a wider code column"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "57e8e4dd6ee4f7504805b296e9d4219b29965e1a"
+  }
+}
