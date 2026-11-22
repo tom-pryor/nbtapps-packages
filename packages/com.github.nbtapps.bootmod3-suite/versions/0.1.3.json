@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/bootmod3-suite-v0.1.3/com.github.nbtapps.bootmod3-suite-0.1.3.nbtpkg",
+  "sha256": "7c0487e1b32b4210f34b75c04490ab7159f08dcd4dd08f7579efeed8e1e6ca75",
+  "released": "2026-11-22",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.6: finds supported CustomROMs and where they keep maps and burbles; exhaust flap and Active Sound work without that lookup"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "57e8e4dd6ee4f7504805b296e9d4219b29965e1a"
+  }
+}
