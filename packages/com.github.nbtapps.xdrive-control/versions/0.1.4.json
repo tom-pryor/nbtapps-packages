@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/xdrive-control-v0.1.4/com.github.nbtapps.xdrive-control-0.1.4.nbtpkg",
+  "sha256": "2c7f2fe3cb5ae6a5f97828421beae474e056208c8a4c2729444bce749765ff46",
+  "released": "2026-11-28",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.19, with a layout for each screen size"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "394acc35817e6bb54c9609795e82817a4b331b62"
+  }
+}
