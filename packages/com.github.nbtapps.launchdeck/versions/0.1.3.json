@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/launchdeck-v0.1.3/com.github.nbtapps.launchdeck-0.1.3.nbtpkg",
+  "sha256": "81276ad1eae11f6cc1e3e907e502ff9dd44baa7930634016c148a77a38250161",
+  "released": "2026-11-28",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.19: records read again after an I/O error"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "394acc35817e6bb54c9609795e82817a4b331b62"
+  }
+}
