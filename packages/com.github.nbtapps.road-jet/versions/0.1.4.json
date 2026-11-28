@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/road-jet-v0.1.4/com.github.nbtapps.road-jet-0.1.4.nbtpkg",
+  "sha256": "d5909f68041371171c4ff016235ac8e5b46cb0169594ce4195f2ebf07388d94d",
+  "released": "2026-11-28",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.19"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "394acc35817e6bb54c9609795e82817a4b331b62"
+  }
+}
