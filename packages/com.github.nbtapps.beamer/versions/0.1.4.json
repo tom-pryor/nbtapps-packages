@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/beamer-v0.1.4/com.github.nbtapps.beamer-0.1.4.nbtpkg",
+  "sha256": "5c981895b97dc8985697212765b38324e149a0d04260578a246c129580278b57",
+  "released": "2026-11-28",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.19"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "394acc35817e6bb54c9609795e82817a4b331b62"
+  }
+}
