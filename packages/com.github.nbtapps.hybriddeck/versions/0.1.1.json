@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/hybriddeck-v0.1.1/com.github.nbtapps.hybriddeck-0.1.1.nbtpkg",
+  "sha256": "2f72e7184cc20ef9adf6865fcb845dd8c3cc20a383fa9af4e87ade7bd18630b9",
+  "released": "2026-11-28",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.19"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "394acc35817e6bb54c9609795e82817a4b331b62"
+  }
+}
