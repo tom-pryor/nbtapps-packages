@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/boostdeck-v0.1.5/com.github.nbtapps.boostdeck-0.1.5.nbtpkg",
+  "sha256": "2c575db19adeace8d3a3c1aee2eef758e7300c777318393cc621cf0a0d824fd4",
+  "released": "2026-11-28",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.19: the DCT temperature option, and readings kept across numeric locales"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "394acc35817e6bb54c9609795e82817a4b331b62"
+  }
+}
