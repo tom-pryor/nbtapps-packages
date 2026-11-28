@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/warmdeck-v0.1.1/com.github.nbtapps.warmdeck-0.1.1.nbtpkg",
+  "sha256": "f049ec5984104855a6f1e3b3382673e08bac2add208f7c80f273029d92a6ab41",
+  "released": "2026-11-28",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.19: °C or °F, and the DCT temperature option"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "394acc35817e6bb54c9609795e82817a4b331b62"
+  }
+}
