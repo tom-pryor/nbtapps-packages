@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/mhd-suite-v0.1.5/com.github.nbtapps.mhd-suite-0.1.5.nbtpkg",
+  "sha256": "04548a1ffb519a3e033e754dd6186af84462c2e5c93bd852616a7cc751c6d7f3",
+  "released": "2026-11-28",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.19"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "394acc35817e6bb54c9609795e82817a4b331b62"
+  }
+}
