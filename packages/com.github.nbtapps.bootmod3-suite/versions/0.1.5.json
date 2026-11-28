@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/NBTApps/ID6_apps_prerelease/releases/download/bootmod3-suite-v0.1.5/com.github.nbtapps.bootmod3-suite-0.1.5.nbtpkg",
+  "sha256": "4ec97831f967acf8c22a4662c349f5063bfd49dbe1eab998902eadd5e13e7861",
+  "released": "2026-11-28",
+  "channel": "prerelease",
+  "notes": ["Upstream v0.7.19"],
+  "source": {
+    "repo": "https://github.com/NBTApps/ID6_apps_prerelease",
+    "commit": "394acc35817e6bb54c9609795e82817a4b331b62"
+  }
+}
